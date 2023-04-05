@@ -1,36 +1,33 @@
 import React, {useEffect, useState} from 'react';
-
-import {Button, Text, TextInput, View} from 'react-native';
-import {NativeModules} from 'react-native';
+import {Button, NativeModules, Text, TextInput, View} from 'react-native';
 import generateText from './TextGenerator';
 const StringFormat = NativeModules.StringFormat;
 
-// const calculatePercentile = ([...data]) => {
-//   const count = data.length;
-// };
+const calculatePercentile = ([...data]) => {
+  return data.sort()[46];
+};
 
 const App = () => {
   const [text, setText] = useState('Enter Text');
   const [responseTime, setResponseTime] = useState('');
-  const responcesTimeTaken = [];
+  const responsesTimeTaken = [];
+  const [ninetyFivePercentile, setNinetyFivePercentile] = useState(0);
 
   useEffect(() => {
-    setText(generateText(50000));
+    setText(generateText(500000));
   }, []);
 
   const capitaliseText = async () => {
     let foo;
-    // const startTime = new Date().getTime();
     for (let i = 0; i < 50; i++) {
       const startTime = new Date().getTime();
       foo = await StringFormat.capitalise(text); // is the understanding correct ?
       const endTime = new Date().getTime();
-      responcesTimeTaken.push(endTime - startTime);
+      responsesTimeTaken.push(endTime - startTime);
     }
-    const endTime = new Date().getTime();
-    console.log(responcesTimeTaken.length);
-    setResponseTime(responcesTimeTaken.toString());
-
+    console.log(responsesTimeTaken.length);
+    setResponseTime(responsesTimeTaken.toString());
+    setNinetyFivePercentile(calculatePercentile(responsesTimeTaken));
     console.log(responseTime);
     return foo;
   };
@@ -44,6 +41,7 @@ const App = () => {
       <View>
         <Text>Time Taken</Text>
         <Text>{responseTime} ms</Text>
+        <Text>{ninetyFivePercentile} ms Ninety Five Percentile</Text>
       </View>
     </View>
   );
